@@ -6,7 +6,6 @@ import android.database.Cursor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Paulo on 30/03/2015.
@@ -49,10 +48,10 @@ public class PessoaDao extends Dao {
         abriConexao();
         //
         ContentValues values = new ContentValues();
-        values.put(ID_PESSOA, pessoa.getId() );
-        values.put(NM_PESSOA, pessoa.getNome() );
-        values.put(DT_NASCIMENTO, pessoa.getDataNascimento() );
-        values.put(NR_TELEFONE, pessoa.getTelefone() );
+        values.put(ID_PESSOA, pessoa.getId());
+        values.put(NM_PESSOA, pessoa.getNome());
+        values.put(DT_NASCIMENTO, pessoa.getDataNascimento());
+        values.put(NR_TELEFONE, pessoa.getTelefone());
         //
         if (mSQLiteDatabase.insert(TB_NAME, null, values) == -1) {
             StringBuilder sbWhere = new StringBuilder();
@@ -98,7 +97,7 @@ public class PessoaDao extends Dao {
         //
         fecharConexao();
         //
-        return  pessoa;
+        return pessoa;
     }
 
     public ArrayList<HashMap<String, String>> pessoaListAll_HM() {
@@ -124,7 +123,45 @@ public class PessoaDao extends Dao {
         //
         fecharConexao();
         //
-        return  pessoas;
+        return pessoas;
+    }
+
+    public void inserirListPessoa(ArrayList<Pessoa> listPessoa) {
+        //
+        abriConexao();
+        //
+        Pessoa pessoa = new Pessoa();
+        ContentValues values = new ContentValues();
+        //
+        try {
+
+            for (int i = 0; i < listPessoa.size(); i++) {
+
+                values.put(ID_PESSOA, listPessoa.get(i).getId());
+                values.put(NM_PESSOA, listPessoa.get(i).getNome());
+                values.put(NR_TELEFONE, listPessoa.get(i).getTelefone());
+                values.put(DT_NASCIMENTO, listPessoa.get(i).getDataNascimento());
+                //
+                if (mSQLiteDatabase.insert(TB_NAME, null, values) == -1) {
+                    StringBuilder sbWhere = new StringBuilder();
+                    sbWhere.append(ID_PESSOA).append(" = '").append(pessoa.getId()).append(" '");
+                    mSQLiteDatabase.update(TB_NAME.toLowerCase(), values, sbWhere.toString().toLowerCase(), null);
+                }
+            }
+
+        } catch (Exception e) {
+
+        }
+        //
+        fecharConexao();
+    }
+
+    public void deletarAll(){
+        abriConexao();
+        //
+        mSQLiteDatabase.delete(TB_NAME,null, null);
+        //
+        fecharConexao();
     }
 
 }
